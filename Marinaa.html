@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для Марины</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0a0e27;
+    --bg-mid:#12173a;
+    --star:#f4f1ff;
+    --accent-cool:#8a94d1;
+    --accent-warm:#f2a65a;
+    --text-soft:#c7cbe8;
+    --text-faint:#8790b8;
+    --line:#2a3060;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg-deep);
+    color:var(--text-soft);
+    font-family:'PT Sans', sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  ::selection{background:var(--accent-cool); color:var(--bg-deep);}
+
+  h1,h2,.serif{
+    font-family:'PT Serif', serif;
+    color:var(--star);
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- estrellas de fondo ---------- */
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+  .star{
+    position:absolute;
+    background:var(--star);
+    border-radius:50%;
+    opacity:0.4;
+    animation:twinkle 5s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:0.15;}
+    50%{opacity:0.9;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .star{animation:none; opacity:0.5;}
+  }
+
+  /* ---------- pantalla de bloqueo ---------- */
+  #lock{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:radial-gradient(ellipse at center, var(--bg-mid) 0%, var(--bg-deep) 75%);
+    transition:opacity 0.9s ease, visibility 0.9s ease;
+  }
+  #lock.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .lock-box{
+    text-align:center;
+    max-width:340px;
+    padding:0 24px;
+    position:relative;
+    z-index:1;
+  }
+  .lock-icon{
+    width:34px;
+    height:34px;
+    margin:0 auto 28px;
+    opacity:0.7;
+  }
+  .lock-box p.hint{
+    font-size:0.95rem;
+    color:var(--text-soft);
+    margin-bottom:22px;
+    line-height:1.6;
+  }
+  #lock-input{
+    width:100%;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--line);
+    color:var(--star);
+    font-family:'PT Serif', serif;
+    font-size:1.4rem;
+    text-align:center;
+    letter-spacing:0.12em;
+    padding:8px 0;
+    outline:none;
+    transition:border-color 0.3s;
+  }
+  #lock-input:focus{border-color:var(--accent-cool);}
+  #lock-input.shake{animation:shake 0.4s;}
+  @keyframes shake{
+    25%{transform:translateX(-8px);}
+    75%{transform:translateX(8px);}
+  }
+  #lock-error{
+    min-height:20px;
+    font-size:0.82rem;
+    color:var(--accent-warm);
+    margin-top:14px;
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  #lock-error.show{opacity:1;}
+
+  /* ---------- contenido principal ---------- */
+  #content{
+    position:relative;
+    z-index:1;
+    visibility:hidden;
+  }
+  #content.visible{visibility:visible;}
+
+  section{
+    position:relative;
+    max-width:640px;
+    margin:0 auto;
+    padding:120px 28px;
+  }
+
+  /* hero */
+  #hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:0;
+    padding-bottom:0;
+    max-width:none;
+  }
+  #hero h1{
+    font-size:clamp(2.1rem, 6vw, 3.4rem);
+    line-height:1.25;
+    max-width:14ch;
+  }
+  #hero .subline{
+    margin-top:22px;
+    font-size:1.02rem;
+    color:var(--text-faint);
+    font-style:italic;
+    font-family:'PT Serif', serif;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:40px;
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+    color:var(--text-faint);
+  }
+
+  /* carta */
+  #letter p{
+    font-family:'PT Serif', serif;
+    font-size:1.12rem;
+    line-height:1.95;
+    color:var(--text-soft);
+    margin-bottom:1.4em;
+  }
+  #letter p:first-child{color:var(--star);}
+  #letter .firma{
+    margin-top:2.2em;
+    font-style:italic;
+    color:var(--accent-cool);
+  }
+
+  /* constelacion */
+  #distancia{
+    text-align:center;
+  }
+  #distancia h2{
+    font-size:1.5rem;
+    margin-bottom:8px;
+  }
+  #distancia .desc{
+    color:var(--text-faint);
+    font-size:0.95rem;
+    margin-bottom:48px;
+  }
+  .constellation{
+    width:100%;
+    max-width:480px;
+    height:auto;
+    margin:0 auto;
+  }
+  .constellation .node{
+    fill:var(--star);
+  }
+  .constellation .pulse{
+    fill:none;
+    stroke:var(--accent-warm);
+    stroke-width:1;
+    opacity:0;
+  }
+  .constellation .link{
+    stroke:var(--accent-cool);
+    stroke-width:1;
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+  }
+  .constellation.draw .link{
+    animation:draw 2.2s ease forwards 0.3s;
+  }
+  .constellation.draw .pulse{
+    animation:pulse 3s ease-in-out infinite 2.5s;
+  }
+  @keyframes draw{
+    to{stroke-dashoffset:0;}
+  }
+  @keyframes pulse{
+    0%{r:4; opacity:0.6;}
+    100%{r:22; opacity:0;}
+  }
+  .constellation text{
+    fill:var(--text-faint);
+    font-family:'PT Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.04em;
+  }
+
+  /* deseo */
+  #deseo{
+    text-align:center;
+  }
+  #deseo h2{
+    font-size:1.5rem;
+    margin-bottom:14px;
+  }
+  #deseo p{
+    color:var(--text-faint);
+    font-size:0.95rem;
+    max-width:38ch;
+    margin:0 auto 40px;
+    line-height:1.7;
+  }
+  .wish-star{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:20px;
+  }
+  .wish-star svg{
+    width:48px;
+    height:48px;
+    fill:var(--accent-warm);
+    filter:drop-shadow(0 0 0px var(--accent-warm));
+    transition:filter 0.4s, transform 0.4s;
+  }
+  .wish-star:hover svg{
+    transform:scale(1.08);
+  }
+  .wish-star.granted svg{
+    filter:drop-shadow(0 0 18px var(--accent-warm));
+  }
+  #wish-msg{
+    margin-top:22px;
+    min-height:24px;
+    font-family:'PT Serif', serif;
+    font-style:italic;
+    color:var(--star);
+    opacity:0;
+    transition:opacity 0.6s;
+  }
+  #wish-msg.show{opacity:1;}
+
+  footer{
+    text-align:center;
+    padding:60px 28px 90px;
+    color:var(--text-faint);
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width:480px){
+    section{padding:90px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+
+<!-- pantalla de bloqueo -->
+<div id="lock">
+  <div class="lock-box">
+    <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="color:var(--text-faint)">
+      <rect x="5" y="11" width="14" height="10" rx="1.5"/>
+      <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+    </svg>
+    <p class="hint">Ты знаешь дату.<br>Введи её, чтобы открыть.</p>
+    <input id="lock-input" type="text" inputmode="numeric" placeholder="ММ/ДД/ГГ" autocomplete="off" maxlength="12">
+    <div id="lock-error">Попробуй ещё раз.</div>
+  </div>
+</div>
+
+<!-- contenido -->
+<div id="content">
+
+  <section id="hero">
+    <h1>Ты — моя вселенная</h1>
+    <p class="subline">письмо для Marina</p>
+    <div class="scroll-cue">↓ читай дальше</div>
+  </section>
+
+  <section id="letter">
+    <p>Marina,</p>
+    <p>Пока я пишу это, где-то там, за сотнями километров, ты, наверное, смотришь в то же небо, что и я.</p>
+    <p>Не знаю, с чего начать — может быть, с того, что каждый день без тебя рядом кажется длиннее, чем должен быть. Расстояние не отменяет ничего из того, что я чувствую. Оно только напоминает, как сильно я хочу быть ближе.</p>
+    <p>Ты — не просто человек, которого я люблю. Ты — то, о чём я думаю, когда закрываю глаза вечером. Ты — причина, по которой я улыбаюсь без повода посреди обычного дня. Если бы любовь можно было измерить в звёздах, между нами их было бы больше, чем на всём ночном небе.</p>
+    <p>Я не обещаю, что будет легко. Но я обещаю, что буду рядом — даже на расстоянии, даже когда трудно, даже когда время идёт не в нашу пользу. Потому что то, что я чувствую к тебе, стоит того, чтобы ждать.</p>
+    <p>Спасибо, что ты есть. Спасибо, что позволяешь мне любить тебя такой, какая ты есть.</p>
+    <p class="firma">Всегда твой,<br>Tay</p>
+  </section>
+
+  <section id="distancia">
+    <h2>Между нами</h2>
+    <p class="desc">расстояние — но не между нашими сердцами</p>
+    <svg class="constellation" viewBox="0 0 400 160" id="constSvg">
+      <line class="link" x1="60" y1="80" x2="340" y2="80"/>
+      <circle class="pulse" cx="60" cy="80" r="4"/>
+      <circle class="pulse" cx="340" cy="80" r="4"/>
+      <circle class="node" cx="60" cy="80" r="5"/>
+      <circle class="node" cx="340" cy="80" r="5"/>
+      <text x="60" y="105" text-anchor="middle">я</text>
+      <text x="340" y="105" text-anchor="middle">ты</text>
+    </svg>
+  </section>
+
+  <section id="deseo">
+    <h2>Загадай желание</h2>
+    <p>Нажми на звезду. Моё уже загадано — быть ближе к тебе.</p>
+    <button class="wish-star" id="wishBtn" aria-label="Загадать желание">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z"/></svg>
+    </button>
+    <div id="wish-msg">пусть сбудется у нас обоих</div>
+  </section>
+
+  <footer>08 / 07 / 26</footer>
+
+</div>
+
+<script>
+  // fondo de estrellas
+  const sky = document.getElementById('sky');
+  const N = window.innerWidth < 600 ? 60 : 110;
+  for(let i=0;i<N;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const size = Math.random()*2 + 1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*5)+'s';
+    s.style.animationDuration = (3+Math.random()*4)+'s';
+    sky.appendChild(s);
+  }
+
+  // bloqueo por fecha
+  const lock = document.getElementById('lock');
+  const input = document.getElementById('lock-input');
+  const error = document.getElementById('lock-error');
+  const content = document.getElementById('content');
+  const ANSWER = '080726';
+
+  function normalize(v){
+    return v.replace(/\D/g,'');
+  }
+
+  function tryUnlock(){
+    const val = normalize(input.value);
+    if(val === ANSWER){
+      lock.classList.add('hidden');
+      content.classList.add('visible');
+      document.getElementById('constSvg').classList.add('draw');
+    } else {
+      error.classList.add('show');
+      input.classList.add('shake');
+      setTimeout(()=>input.classList.remove('shake'), 400);
+    }
+  }
+
+  input.addEventListener('keydown', e=>{
+    if(e.key==='Enter') tryUnlock();
+  });
+  input.addEventListener('input', ()=> error.classList.remove('show'));
+
+  // deseo
+  const wishBtn = document.getElementById('wishBtn');
+  const wishMsg = document.getElementById('wish-msg');
+  wishBtn.addEventListener('click', ()=>{
+    wishBtn.classList.add('granted');
+    wishMsg.classList.add('show');
+  });
+</script>
+
+</body>
+</html>
